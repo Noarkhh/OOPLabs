@@ -6,8 +6,11 @@ import static java.lang.System.out;
 public class World {
     public static void main(String[] args) {
         out.println("Start");
-        Direction[] directions = convert(args);
-        run(directions);
+//        String[] chars = {"f", "f", "r"};
+//        Direction[] directions = convert(chars);
+//        run(directions);
+        MapDirection mapDirection = MapDirection.WEST;
+        out.println(mapDirection.toUnitVector());
         out.println("Stop");
     }
     public static Direction[] convert(String[] characters) {
