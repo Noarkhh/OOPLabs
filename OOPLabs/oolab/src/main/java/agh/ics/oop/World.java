@@ -7,28 +7,14 @@ public class World {
     public static void main(String[] args) {
         Animal animal = new Animal(new Map(new Vector2d(0, 0), new Vector2d(4, 4)));
         out.println(animal);
-        for (MoveDirection moveDirection : OptionsParser.parse(new String[]{"r", "f", "f", "f", "l", "f", "f", "f"})) {
+        for (MoveDirection moveDirection : OptionsParser.parse(new String[]{"r", "f", "f"})) {
             animal.move(moveDirection);
         }
         out.println(animal);
-    }
-    public static Direction[] convert(String[] characters) {
-        Direction[] directions = new Direction[characters.length];
-        int dir_ind = 0;
-        for (String character : characters) {
-            Direction direction = switch (character) {
-                case "f" -> Direction.FORWARD;
-                case "b" -> Direction.BACKWARD;
-                case "r" -> Direction.RIGHT;
-                case "l" -> Direction.LEFT;
-                default -> Direction.INVALID;
-            };
-            if (direction != Direction.INVALID) {
-                directions[dir_ind] = direction;
-                dir_ind++;
-            }
-        }
-        return Arrays.copyOfRange(directions, 0, dir_ind);
+        // A way to ensure that no two animals occupy the same place is to keep track of all animal positions and
+        // every time an animal moves check if its destination is occupied. A good way to store this all information
+        // would be in my Map class, either by keeping a list or dict of all animals, or a 2d array representing the
+        // map and the animals on it in appropriate coordinates.
     }
     public static void run(Direction[] directions) {
         for (Direction direction : directions) {

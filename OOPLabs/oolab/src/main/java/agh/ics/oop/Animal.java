@@ -34,4 +34,12 @@ public class Animal {
             }
         }
     }
+
+    public MapDirection getOrientation() {
+        return orientation;
+    }
+
+    public Vector2d getPosition() {
+        return position;
+    }
 }
