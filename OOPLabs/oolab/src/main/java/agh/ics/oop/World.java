@@ -5,13 +5,12 @@ import static java.lang.System.out;
 
 public class World {
     public static void main(String[] args) {
-        out.println("Start");
-//        String[] chars = {"f", "f", "r"};
-//        Direction[] directions = convert(chars);
-//        run(directions);
-        MapDirection mapDirection = MapDirection.WEST;
-        out.println(mapDirection.toUnitVector());
-        out.println("Stop");
+        Animal animal = new Animal(new Map(new Vector2d(0, 0), new Vector2d(4, 4)));
+        out.println(animal);
+        for (MoveDirection moveDirection : OptionsParser.parse(new String[]{"r", "f", "f", "f", "l", "f", "f", "f"})) {
+            animal.move(moveDirection);
+        }
+        out.println(animal);
     }
     public static Direction[] convert(String[] characters) {
         Direction[] directions = new Direction[characters.length];
