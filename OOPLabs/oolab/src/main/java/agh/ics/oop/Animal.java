@@ -1,17 +1,19 @@
 package agh.ics.oop;
 
 public class Animal {
-    private Vector2d position = new Vector2d(2,2);
+    private Vector2d position = new Vector2d(2, 2);
     private MapDirection orientation = MapDirection.NORTH;
-    private Map map;
+    private IWorldMap map = new RectangularMap(5, 5);
 
-    Animal(Map map) {
+    public Animal(IWorldMap map, Vector2d initialPosition) {
         this.map = map;
+        this.position = initialPosition;
     }
 
+    public Animal() {}
     @Override
     public String toString() {
-        return String.format("Position: %s\nOrientation: %s", position.toString(), orientation.toString());
+        return orientation.toString();
     }
 
     public boolean isAt(Vector2d position_to_test) {
@@ -22,16 +24,19 @@ public class Animal {
         switch (moveDirection) {
             case RIGHT -> orientation = orientation.next();
             case LEFT -> orientation = orientation.previous();
-            case FORWARD, BACKWARD -> {
+            case FORWARD -> {
                 Vector2d new_position = position.add(orientation.toUnitVector());
-                if (map.doesContain(new_position)) {
-                    if (moveDirection.equals(MoveDirection.FORWARD)) {
-                        position = position.add(orientation.toUnitVector());
-                    } else {
-                        position = position.subtract(orientation.toUnitVector());
-                    }
+                if (map.canMoveTo(new_position)) {
+                    position = position.add(orientation.toUnitVector());
                 }
             }
+            case BACKWARD -> {
+                Vector2d new_position = position.subtract(orientation.toUnitVector());
+                if (map.canMoveTo(new_position)) {
+                    position = position.subtract(orientation.toUnitVector());
+                }
+            }
+
         }
     }
 

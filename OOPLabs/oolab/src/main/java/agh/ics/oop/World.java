@@ -5,28 +5,14 @@ import static java.lang.System.out;
 
 public class World {
     public static void main(String[] args) {
-        Animal animal = new Animal(new Map(new Vector2d(0, 0), new Vector2d(4, 4)));
-        out.println(animal);
-        for (MoveDirection moveDirection : OptionsParser.parse(new String[]{"r", "f", "f"})) {
-            animal.move(moveDirection);
-        }
-        out.println(animal);
-        // A way to ensure that no two animals occupy the same place is to keep track of all animal positions and
-        // every time an animal moves check if its destination is occupied. A good way to store this all information
-        // would be in my Map class, either by keeping a list or dict of all animals, or a 2d array representing the
-        // map and the animals on it in appropriate coordinates.
-    }
-    public static void run(Direction[] directions) {
-        for (Direction direction : directions) {
-            String message = switch (direction) {
-                case FORWARD -> "idzie do przodu";
-                case BACKWARD -> "idzie do tyłu";
-                case RIGHT -> "skręca w prawo";
-                case LEFT -> "skręca w lewo";
-                default -> "";
-            };
-            if (!message.equals("")) out.println("Zwierzak " + message);
-        }
-
+        String[] args1 = new String[]{"f", "b", "r", "l", "f", "f", "r", "r", "f", "f"};
+        MoveDirection[] directions = OptionsParser.parse(args1);
+        out.println(Arrays.toString(directions));
+        IWorldMap map = new RectangularMap(10, 5);
+        Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4) };
+        IEngine engine = new SimulationEngine(directions, map, positions);
+        out.println(map);
+        engine.run();
+        out.println(map);
     }
 }
