@@ -7,6 +7,7 @@ public class Animal extends AbstractMapElement {
     public Animal(IWorldMap map, Vector2d initialPosition) {
         super(initialPosition);
         this.map = map;
+        eatGrass();
     }
 
     public Animal() {
@@ -27,18 +28,24 @@ public class Animal extends AbstractMapElement {
             case LEFT -> orientation = orientation.previous();
             case FORWARD -> {
                 Vector2d new_position = position.add(orientation.toUnitVector());
-                if (map.canMoveTo(new_position)) {
-                    position = position.add(orientation.toUnitVector());
-                }
+                if (map.canMoveTo(new_position)) position = new_position;
+
             }
             case BACKWARD -> {
                 Vector2d new_position = position.subtract(orientation.toUnitVector());
-                if (map.canMoveTo(new_position)) {
-                    position = position.subtract(orientation.toUnitVector());
-                }
+                if (map.canMoveTo(new_position)) position = new_position;
             }
 
         }
+        eatGrass();
+    }
+
+    public boolean eatGrass() {
+        if (map instanceof GrassField grassField && ((GrassField) map).grassAt(position) != null) {
+            grassField.replacePatchAt(position);
+            return true;
+        }
+        return false;
     }
 
     public MapDirection getOrientation() {

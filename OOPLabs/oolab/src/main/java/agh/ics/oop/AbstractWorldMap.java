@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 public abstract class AbstractWorldMap implements IWorldMap{
     protected final LinkedList<Animal> animals = new LinkedList<>();
+    protected final LinkedList<AbstractMapElement> elements = new LinkedList<>();
     protected final Vector2d lowerLeft;
     protected final Vector2d upperRight;
 
@@ -22,20 +23,27 @@ public abstract class AbstractWorldMap implements IWorldMap{
         if (vec.y > upperRight.y) return false;
         if (vec.x < lowerLeft.x) return false;
         if (vec.y < lowerLeft.y) return false;
-        return !isOccupied(vec);
+        return !isOccupiedByAnimal(vec);
     }
 
     @Override
-    public boolean place(Animal animal) {
-        for (Animal present_animal : animals) {
-            if (present_animal.getPosition().equals(animal.getPosition())) return false;
+    public boolean place(AbstractMapElement newElement) {
+        AbstractMapElement existingElement = elementAt(newElement.getPosition());
+
+        if (existingElement != null && existingElement.getClass().isInstance(newElement)) {
+            return false;
         }
-        animals.add(animal);
+        elements.add(newElement);
+        if (newElement instanceof Animal) animals.add((Animal) newElement);
         return true;
     }
 
+    protected boolean remove(AbstractMapElement newElement) {
+        return elements.remove(newElement);
+    }
+
     @Override
-    public boolean isOccupied(Vector2d position) {
+    public boolean isOccupiedByAnimal(Vector2d position) {
         for (Animal present_animal : animals) {
             if (present_animal.getPosition().equals(position)) return true;
         }
@@ -43,15 +51,16 @@ public abstract class AbstractWorldMap implements IWorldMap{
     }
 
     @Override
-    public Object objectAt(Vector2d position) {
-        for (Animal present_animal : animals) {
-            if (present_animal.getPosition().equals(position)) return present_animal;
+    public AbstractMapElement elementAt(Vector2d position) {
+        for (AbstractMapElement currentElement : elements) {
+            if (currentElement.getPosition().equals(position)) return currentElement;
         }
         return null;
     }
 
     abstract Vector2d[] getDrawingBounds();
 
+    @Override
     public String toString() {
         Vector2d[] drawingBounds = getDrawingBounds();
         return new MapVisualizer(this).draw(drawingBounds[0], drawingBounds[1]);

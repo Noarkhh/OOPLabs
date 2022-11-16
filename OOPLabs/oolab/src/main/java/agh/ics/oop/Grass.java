@@ -5,10 +5,6 @@ public class Grass extends AbstractMapElement {
         super(position);
     }
 
-    public Vector2d getPosition() {
-        return position;
-    }
-
     @Override
     public String toString() {
         return "*";
