@@ -1,12 +1,17 @@
 package agh.ics.oop;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Animal extends AbstractMapElement {
     private MapDirection orientation = MapDirection.NORTH;
     private IWorldMap map = new RectangularMap(5, 5);
+    private final List<IPositionChangeObserver> observers = new LinkedList<>();
 
     public Animal(IWorldMap map, Vector2d initialPosition) {
         super(initialPosition);
         this.map = map;
+        observers.add(map);
         eatGrass();
     }
 
@@ -23,6 +28,7 @@ public class Animal extends AbstractMapElement {
     }
 
     public void move(MoveDirection moveDirection) {
+        previousPosition = position;
         switch (moveDirection) {
             case RIGHT -> orientation = orientation.next();
             case LEFT -> orientation = orientation.previous();
@@ -38,10 +44,14 @@ public class Animal extends AbstractMapElement {
 
         }
         eatGrass();
+        positionChanged();
+        System.out.println(previousPosition);
+        System.out.println(position);
+        System.out.println("\n");
     }
 
     public boolean eatGrass() {
-        if (map instanceof GrassField grassField && ((GrassField) map).grassAt(position) != null) {
+        if (map instanceof GrassField grassField && grassField.elementAt(position) instanceof Grass) {
             grassField.replacePatchAt(position);
             return true;
         }
@@ -50,5 +60,19 @@ public class Animal extends AbstractMapElement {
 
     public MapDirection getOrientation() {
         return orientation;
+    }
+
+    private void positionChanged() {
+        for (IPositionChangeObserver observer : observers) {
+            observer.positionChanged(previousPosition, position);
+        }
+    }
+
+    public void addObserver(IPositionChangeObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(IPositionChangeObserver observer) {
+        observers.remove(observer);
     }
 }

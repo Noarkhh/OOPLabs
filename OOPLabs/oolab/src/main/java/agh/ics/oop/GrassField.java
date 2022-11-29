@@ -1,11 +1,10 @@
 package agh.ics.oop;
 
-import java.util.LinkedList;
+import java.util.Map;
 import java.util.Random;
 
 public class GrassField extends AbstractWorldMap {
 
-    private final LinkedList<Grass> grassPatches = new LinkedList<>();
     private final int grassPatchesRange;
 
     GrassField(int initialGrassAmount) {
@@ -19,22 +18,13 @@ public class GrassField extends AbstractWorldMap {
         }
     }
 
-    @Override
-    public boolean place(AbstractMapElement newElement) {
-        if (super.place(newElement)) {
-            if (newElement instanceof Grass) grassPatches.add((Grass) newElement);
-            return true;
-        }
-        return false;
-    }
-
     public boolean replacePatchAt(Vector2d patchPosition) {
 
-        if (remove(grassAt(patchPosition))) {
+        if (remove(elementAt(patchPosition))) {
             Random random = new Random();
             while (true) {
                 Vector2d newPosition = new Vector2d(random.nextInt(grassPatchesRange), random.nextInt(grassPatchesRange));
-                if (elementAt(newPosition) == null) {
+                if (newPosition != patchPosition && elementAt(newPosition) == null) {
                     place(new Grass(newPosition));
                     return true;
                 }
@@ -48,17 +38,10 @@ public class GrassField extends AbstractWorldMap {
 
         Vector2d dynLowerLeft = upperRight;
         Vector2d dynUpperRight = lowerLeft;
-        for (AbstractMapElement element : elements) {
-            dynLowerLeft = dynLowerLeft.lowerLeft(element.getPosition());
-            dynUpperRight = dynUpperRight.upperRight(element.getPosition());
+        for (Map.Entry<Vector2d, AbstractMapElement> element : elements.entrySet()) {
+            dynLowerLeft = dynLowerLeft.lowerLeft(element.getKey());
+            dynUpperRight = dynUpperRight.upperRight(element.getKey());
         }
         return new Vector2d[]{dynLowerLeft, dynUpperRight};
-    }
-
-    public Grass grassAt(Vector2d position) {
-        for (Grass grassPatch : grassPatches) {
-            if (grassPatch.position.equals(position)) return grassPatch;
-        }
-        return null;
     }
 }

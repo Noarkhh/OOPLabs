@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import java.util.Objects;
 import java.util.Vector;
 
 public class Vector2d {
@@ -50,6 +51,11 @@ public class Vector2d {
         if (!(other instanceof Vector2d)) return false;
         Vector2d other_v = (Vector2d) other;
         return other_v.x == x && other_v.y == y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     public boolean strongEquals(Object other) {

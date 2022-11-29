@@ -7,7 +7,7 @@ package agh.ics.oop;
  * @author apohllo
  *
  */
-public interface IWorldMap {
+public interface IWorldMap extends IPositionChangeObserver {
     /**
      * Indicate if any object can move to the given position.
      *
@@ -27,16 +27,6 @@ public interface IWorldMap {
      */
     boolean place(AbstractMapElement element);
 
-    /**
-     * Return true if given position on the map is occupied. Should not be
-     * confused with canMove since there might be empty positions where the animal
-     * cannot move.
-     *
-     * @param position
-     *            Position to check.
-     * @return True if the position is occupied.
-     */
-    boolean isOccupiedByAnimal(Vector2d position);
 
     /**
      * Return an object at a given position.
@@ -46,4 +36,5 @@ public interface IWorldMap {
      * @return Object or null if the position is not occupied.
      */
     AbstractMapElement elementAt(Vector2d position);
+
 }

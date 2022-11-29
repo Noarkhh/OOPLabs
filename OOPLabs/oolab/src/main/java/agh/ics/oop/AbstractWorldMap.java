@@ -1,10 +1,9 @@
 package agh.ics.oop;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 
 public abstract class AbstractWorldMap implements IWorldMap{
-    protected final LinkedList<Animal> animals = new LinkedList<>();
-    protected final LinkedList<AbstractMapElement> elements = new LinkedList<>();
+    protected final HashMap<Vector2d, AbstractMapElement> elements = new HashMap<>();
     protected final Vector2d lowerLeft;
     protected final Vector2d upperRight;
 
@@ -23,39 +22,31 @@ public abstract class AbstractWorldMap implements IWorldMap{
         if (vec.y > upperRight.y) return false;
         if (vec.x < lowerLeft.x) return false;
         if (vec.y < lowerLeft.y) return false;
-        return !isOccupiedByAnimal(vec);
+        return !(elementAt(vec) instanceof Animal);
     }
 
     @Override
     public boolean place(AbstractMapElement newElement) {
-        AbstractMapElement existingElement = elementAt(newElement.getPosition());
-
-        if (existingElement != null && existingElement.getClass().isInstance(newElement)) {
-            return false;
-        }
-        elements.add(newElement);
-        if (newElement instanceof Animal) animals.add((Animal) newElement);
+        if (elements.get(newElement.getPosition()) != null) return false;
+        elements.put(newElement.getPosition(), newElement);
         return true;
     }
 
     protected boolean remove(AbstractMapElement newElement) {
-        return elements.remove(newElement);
-    }
-
-    @Override
-    public boolean isOccupiedByAnimal(Vector2d position) {
-        for (Animal present_animal : animals) {
-            if (present_animal.getPosition().equals(position)) return true;
-        }
-        return false;
+        return elements.remove(newElement.getPosition()) != null;
     }
 
     @Override
     public AbstractMapElement elementAt(Vector2d position) {
-        for (AbstractMapElement currentElement : elements) {
-            if (currentElement.getPosition().equals(position)) return currentElement;
-        }
-        return null;
+        return elements.get(position);
+    }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        AbstractMapElement movedElement = elements.get(oldPosition);
+        elements.remove(movedElement.getPosition());
+        elements.put(newPosition, movedElement);
+        System.out.println(elements);
     }
 
     abstract Vector2d[] getDrawingBounds();

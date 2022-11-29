@@ -13,11 +13,11 @@ public class SimulationTest {
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
 
-        Assertions.assertTrue(map.isOccupiedByAnimal(new Vector2d(3, 4)));
+        Assertions.assertTrue(map.elementAt(new Vector2d(3, 4)) instanceof Animal);
         Animal animal = (Animal) map.elementAt(new Vector2d(3, 4));
         Assertions.assertEquals(MapDirection.NORTH, animal.getOrientation());
 
-        Assertions.assertTrue(map.isOccupiedByAnimal(new Vector2d(2, 0)));
+        Assertions.assertTrue(map.elementAt(new Vector2d(2, 0)) instanceof Animal);
         animal = (Animal) map.elementAt(new Vector2d(2, 0));
         Assertions.assertEquals(MapDirection.SOUTH, animal.getOrientation());
     }
@@ -31,7 +31,7 @@ public class SimulationTest {
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
 
-        Assertions.assertTrue(map.isOccupiedByAnimal(new Vector2d(1, 1)));
+        Assertions.assertTrue(map.elementAt(new Vector2d(1, 1)) instanceof Animal);
         Animal animal = (Animal) map.elementAt(new Vector2d(1, 1));
         Assertions.assertEquals(MapDirection.EAST, animal.getOrientation());
     }
