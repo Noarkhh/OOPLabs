@@ -11,7 +11,7 @@ public class Animal extends AbstractMapElement {
     public Animal(IWorldMap map, Vector2d initialPosition) {
         super(initialPosition);
         this.map = map;
-        observers.add(map);
+        addObserver(map);
         eatGrass();
     }
 
@@ -45,9 +45,6 @@ public class Animal extends AbstractMapElement {
         }
         eatGrass();
         positionChanged();
-        System.out.println(previousPosition);
-        System.out.println(position);
-        System.out.println("\n");
     }
 
     public boolean eatGrass() {

@@ -44,9 +44,8 @@ public abstract class AbstractWorldMap implements IWorldMap{
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
         AbstractMapElement movedElement = elements.get(oldPosition);
-        elements.remove(movedElement.getPosition());
+        elements.remove(oldPosition);
         elements.put(newPosition, movedElement);
-        System.out.println(elements);
     }
 
     abstract Vector2d[] getDrawingBounds();
