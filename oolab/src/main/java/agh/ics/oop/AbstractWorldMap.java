@@ -26,10 +26,11 @@ public abstract class AbstractWorldMap implements IWorldMap{
     }
 
     @Override
-    public boolean place(AbstractMapElement newElement) {
-        if (elements.get(newElement.getPosition()) != null) return false;
+    public void place(AbstractMapElement newElement) {
+        if (elements.get(newElement.getPosition()) != null) {
+            throw new IllegalArgumentException("Position " + newElement.getPosition() + " already occupied!");
+        }
         elements.put(newElement.getPosition(), newElement);
-        return true;
     }
 
     protected boolean remove(AbstractMapElement newElement) {

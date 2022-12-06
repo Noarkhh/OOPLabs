@@ -12,6 +12,7 @@ public class Animal extends AbstractMapElement {
         super(initialPosition);
         this.map = map;
         addObserver(map);
+        if (map instanceof GrassField) addObserver(((GrassField) map).mapBoundary);
         eatGrass();
     }
 

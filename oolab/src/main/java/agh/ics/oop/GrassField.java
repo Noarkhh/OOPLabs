@@ -1,11 +1,11 @@
 package agh.ics.oop;
 
-import java.util.Map;
 import java.util.Random;
 
 public class GrassField extends AbstractWorldMap {
 
     private final int grassPatchesRange;
+    public final MapBoundary mapBoundary = new MapBoundary();
 
     GrassField(int initialGrassAmount) {
         super(new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE), new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -13,35 +13,39 @@ public class GrassField extends AbstractWorldMap {
         Random random = new Random();
         int placedPatches = 0;
         while (placedPatches < initialGrassAmount) {
-            Grass newPatch = new Grass(new Vector2d(random.nextInt(grassPatchesRange), random.nextInt(grassPatchesRange)));
-            if (place(newPatch)) placedPatches++;
+            Vector2d newPatchPosition = new Vector2d(random.nextInt(grassPatchesRange), random.nextInt(grassPatchesRange));
+            if (elementAt(newPatchPosition) == null) {
+                place(new Grass(newPatchPosition));
+                placedPatches++;
+            }
         }
     }
 
-    public boolean replacePatchAt(Vector2d patchPosition) {
+    public void replacePatchAt(Vector2d patchPosition) {
 
         if (remove(elementAt(patchPosition))) {
             Random random = new Random();
             while (true) {
                 Vector2d newPosition = new Vector2d(random.nextInt(grassPatchesRange), random.nextInt(grassPatchesRange));
-                if (newPosition != patchPosition && elementAt(newPosition) == null) {
+                if (!newPosition.equals(patchPosition) && elementAt(newPosition) == null) {
                     place(new Grass(newPosition));
-                    return true;
+                    return;
                 }
             }
-        } else return false;
+        }
     }
 
     @Override
     Vector2d[] getDrawingBounds() {
         if (elements.size() == 0) return new Vector2d[]{new Vector2d(0, 0), new Vector2d(10, 10)};
+        System.out.println(mapBoundary.getLowerLeft());
+        System.out.println(mapBoundary.getUpperRight());
+        return new Vector2d[]{mapBoundary.getLowerLeft(), mapBoundary.getUpperRight()};
+    }
 
-        Vector2d dynLowerLeft = upperRight;
-        Vector2d dynUpperRight = lowerLeft;
-        for (Map.Entry<Vector2d, AbstractMapElement> element : elements.entrySet()) {
-            dynLowerLeft = dynLowerLeft.lowerLeft(element.getKey());
-            dynUpperRight = dynUpperRight.upperRight(element.getKey());
-        }
-        return new Vector2d[]{dynLowerLeft, dynUpperRight};
+    @Override
+    public void place(AbstractMapElement newElement) {
+        super.place(newElement);
+        mapBoundary.addElement(newElement);
     }
 }

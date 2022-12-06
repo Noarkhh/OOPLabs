@@ -14,10 +14,11 @@ public class OptionsParser {
                 case "l" -> MoveDirection.LEFT;
                 default -> MoveDirection.INVALID;
             };
-            if (moveDirection != MoveDirection.INVALID) {
-                moveDirections[dir_ind] = moveDirection;
-                dir_ind++;
+            if (moveDirection == MoveDirection.INVALID) {
+                throw new IllegalArgumentException(character + " is not legal move specification");
             }
+            moveDirections[dir_ind] = moveDirection;
+            dir_ind++;
         }
         return Arrays.copyOfRange(moveDirections, 0, dir_ind);
     }

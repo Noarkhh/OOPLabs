@@ -38,11 +38,6 @@ public class AnimalMovementTest {
 
     @Test
     public void testParse() {
-        Animal animal = new Animal();
-        for (MoveDirection moveDirection : OptionsParser.parse(new String[]{"r", "f", "gibon", "f", "szynszyla", "g"})) {
-            animal.move(moveDirection);
-        }
-        Assertions.assertEquals(MapDirection.EAST, animal.getOrientation());
-        Assertions.assertEquals(new Vector2d(4, 2), animal.getPosition());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(new String[]{"r", "f", "gibon", "f", "szynszyla", "g"}));
     }
 }

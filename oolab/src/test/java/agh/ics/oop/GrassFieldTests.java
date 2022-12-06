@@ -11,7 +11,7 @@ public class GrassFieldTests {
         grassField.place(new Animal(grassField, new Vector2d(5, 5)));
 
         Assertions.assertEquals(Animal.class, grassField.elementAt(new Vector2d(5, 5)).getClass());
-        Assertions.assertFalse(grassField.place(new Animal(grassField, new Vector2d(5, 5))));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> grassField.place(new Animal(grassField, new Vector2d(5, 5))));
     }
 
     @Test

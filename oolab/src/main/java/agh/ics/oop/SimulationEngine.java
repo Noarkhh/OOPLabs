@@ -9,9 +9,8 @@ public class SimulationEngine implements IEngine {
     public SimulationEngine(MoveDirection[] directions, IWorldMap map, Vector2d[] positions) {
         for (Vector2d position : positions) {
             Animal new_animal = new Animal(map, position);
-            if (map.place(new_animal)) {
-                animals.add(new_animal);
-            }
+            map.place(new_animal);
+            animals.add(new_animal);
         }
         this.directions = directions;
     }

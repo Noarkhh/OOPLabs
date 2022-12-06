@@ -22,10 +22,8 @@ public interface IWorldMap extends IPositionChangeObserver {
      *
      * @param element
      *            The element to place on the map.
-     * @return True if the element was placed. The element cannot be placed if the map is already occupied by an object
-     * of the same instance.
      */
-    boolean place(AbstractMapElement element);
+    void place(AbstractMapElement element) throws IllegalArgumentException;
 
 
     /**

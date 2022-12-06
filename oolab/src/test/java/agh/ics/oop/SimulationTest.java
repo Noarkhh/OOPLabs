@@ -35,4 +35,13 @@ public class SimulationTest {
         Animal animal = (Animal) map.elementAt(new Vector2d(1, 1));
         Assertions.assertEquals(MapDirection.EAST, animal.getOrientation());
     }
+
+    @Test
+    public void testSimulationThrows() {
+        String[] args1 = new String[]{"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f", "f", "f", "f"};
+        MoveDirection[] directions = OptionsParser.parse(args1);
+        RectangularMap map = new RectangularMap(10, 5);
+        Vector2d[] positions = { new Vector2d(2,2), new Vector2d(3,4), new Vector2d(3,4) };
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new SimulationEngine(directions, map, positions));
+    }
 }
