@@ -2,11 +2,12 @@ package agh.ics.oop;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 public class SimulationEngine implements IEngine {
-    MoveDirection[] directions;
+    List<MoveDirection> directions;
     LinkedList<Animal> animals = new LinkedList<>();
-    public SimulationEngine(MoveDirection[] directions, IWorldMap map, Vector2d[] positions) {
+    public SimulationEngine(List<MoveDirection> directions, IWorldMap map, Vector2d[] positions) {
         for (Vector2d position : positions) {
             Animal new_animal = new Animal(map, position);
             map.place(new_animal);

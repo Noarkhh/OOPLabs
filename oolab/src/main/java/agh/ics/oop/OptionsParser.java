@@ -1,11 +1,11 @@
 package agh.ics.oop;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class OptionsParser {
-    public static MoveDirection[] parse(String[] characters) {
-        MoveDirection[] moveDirections = new MoveDirection[characters.length];
-        int dir_ind = 0;
+    public static List<MoveDirection> parse(List<String> characters) {
+        List<MoveDirection> moveDirections = new LinkedList<>();
         for (String character : characters) {
             MoveDirection moveDirection = switch (character) {
                 case "f" -> MoveDirection.FORWARD;
@@ -17,9 +17,8 @@ public class OptionsParser {
             if (moveDirection == MoveDirection.INVALID) {
                 throw new IllegalArgumentException(character + " is not legal move specification");
             }
-            moveDirections[dir_ind] = moveDirection;
-            dir_ind++;
+            moveDirections.add(moveDirection);
         }
-        return Arrays.copyOfRange(moveDirections, 0, dir_ind);
+        return moveDirections;
     }
 }

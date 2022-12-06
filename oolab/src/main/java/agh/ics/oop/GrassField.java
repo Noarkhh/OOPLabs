@@ -7,7 +7,7 @@ public class GrassField extends AbstractWorldMap {
     private final int grassPatchesRange;
     public final MapBoundary mapBoundary = new MapBoundary();
 
-    GrassField(int initialGrassAmount) {
+    public GrassField(int initialGrassAmount) {
         super(new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE), new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE));
         this.grassPatchesRange = (int) Math.sqrt(initialGrassAmount * 10);
         Random random = new Random();
@@ -38,8 +38,6 @@ public class GrassField extends AbstractWorldMap {
     @Override
     Vector2d[] getDrawingBounds() {
         if (elements.size() == 0) return new Vector2d[]{new Vector2d(0, 0), new Vector2d(10, 10)};
-        System.out.println(mapBoundary.getLowerLeft());
-        System.out.println(mapBoundary.getUpperRight());
         return new Vector2d[]{mapBoundary.getLowerLeft(), mapBoundary.getUpperRight()};
     }
 
