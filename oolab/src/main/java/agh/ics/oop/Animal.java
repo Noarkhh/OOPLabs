@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+import agh.ics.oop.gui.SpriteContainer;
+import javafx.scene.image.Image;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,10 +27,6 @@ public class Animal extends AbstractMapElement {
         return orientation.toString();
     }
 
-    public boolean isAt(Vector2d position_to_test) {
-        return position.equals(position_to_test);
-    }
-
     public void move(MoveDirection moveDirection) {
         previousPosition = position;
         switch (moveDirection) {
@@ -48,12 +47,10 @@ public class Animal extends AbstractMapElement {
         positionChanged();
     }
 
-    public boolean eatGrass() {
+    public void eatGrass() {
         if (map instanceof GrassField grassField && grassField.elementAt(position) instanceof Grass) {
             grassField.replacePatchAt(position);
-            return true;
         }
-        return false;
     }
 
     public MapDirection getOrientation() {
@@ -72,5 +69,15 @@ public class Animal extends AbstractMapElement {
 
     public void removeObserver(IPositionChangeObserver observer) {
         observers.remove(observer);
+    }
+
+    @Override
+    public Image getImage(SpriteContainer spriteContainer) {
+        return switch (orientation) {
+            case NORTH -> spriteContainer.getSprite("up");
+            case SOUTH -> spriteContainer.getSprite("down");
+            case WEST -> spriteContainer.getSprite("left");
+            case EAST -> spriteContainer.getSprite("right");
+        };
     }
 }

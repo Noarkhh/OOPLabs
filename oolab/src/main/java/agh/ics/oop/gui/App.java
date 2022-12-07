@@ -17,12 +17,13 @@ import static java.lang.System.out;
 public class App extends Application {
 
     private AbstractWorldMap mapToDraw;
+    private SpriteContainer spriteContainer;
     private final Vector2d windowSize = new Vector2d(500, 500);
-    private final Vector2d verticalHeaderCellSize = new Vector2d(20, 20);
-    private final Vector2d horizontalHeaderCellSize = new Vector2d(20, 20);
+    private final Vector2d verticalHeaderCellSize = new Vector2d(20, 40);
+    private final Vector2d horizontalHeaderCellSize = new Vector2d(40, 20);
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
 
         grid.setGridLinesVisible(true);
@@ -38,11 +39,16 @@ public class App extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        AbstractWorldMap map = new GrassField(40);
+        try {
+            spriteContainer = new SpriteContainer(List.of(new String[]{"up", "left", "down", "right", "grass"}));
+        } catch (NullPointerException ex) {
+            out.println(ex.getMessage());
+        }
+        AbstractWorldMap map = new GrassField(10);
         mapToDraw = map;
         List<MoveDirection> directions = OptionsParser.parse(getParameters().getRaw());
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
-        IEngine engine = new SimulationEngine(directions, map, positions);
+        SimulationEngine engine = new SimulationEngine(directions, map, positions);
 
         out.println(map);
         engine.run();
@@ -90,8 +96,11 @@ public class App extends Application {
         AbstractMapElement elementToDraw = mapToDraw.elementAt(elementPosition);
         if (elementToDraw == null) return;
 
-        Label elementLabel = new Label(elementToDraw.toString());
-        grid.add(elementLabel, gridDrawPosition.x, gridDrawPosition.y);
-        GridPane.setHalignment(elementLabel, HPos.CENTER);
+//        Label elementLabel = new Label(elementToDraw.toString());
+        GuiElementBox guiElementBox = new GuiElementBox(elementToDraw, spriteContainer);
+//        ImageView elementImageView = new ImageView(elementToDraw.getImage(spriteContainer));
+
+        grid.add(guiElementBox.getBox(), gridDrawPosition.x, gridDrawPosition.y);
+        GridPane.setHalignment(guiElementBox.getBox(), HPos.CENTER);
     }
 }

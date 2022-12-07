@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SimulationEngine implements IEngine {
+public class SimulationEngine implements Runnable {
     List<MoveDirection> directions;
     LinkedList<Animal> animals = new LinkedList<>();
     public SimulationEngine(List<MoveDirection> directions, IWorldMap map, Vector2d[] positions) {
