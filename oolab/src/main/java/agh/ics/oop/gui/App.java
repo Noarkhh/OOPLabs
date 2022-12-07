@@ -2,6 +2,7 @@ package agh.ics.oop.gui;
 
 import agh.ics.oop.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -14,26 +15,37 @@ import java.util.List;
 
 import static java.lang.System.out;
 
-public class App extends Application {
+public class App extends Application implements IPositionChangeObserver {
 
     private AbstractWorldMap mapToDraw;
     private SpriteContainer spriteContainer;
-    private final Vector2d windowSize = new Vector2d(500, 500);
+    private final Vector2d windowSize = new Vector2d(1000, 1000);
     private final Vector2d verticalHeaderCellSize = new Vector2d(20, 40);
     private final Vector2d horizontalHeaderCellSize = new Vector2d(40, 20);
 
+    private GridPane grid;
+    private Thread engineThread;
+
     @Override
     public void start(Stage primaryStage) {
-        GridPane grid = new GridPane();
-
-        grid.setGridLinesVisible(true);
-        drawHeader(grid);
-        drawElements(grid);
+        grid = new GridPane();
+        updateGrid();
 
         Scene scene = new Scene(grid, windowSize.x, windowSize.y);
-
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        engineThread.start();
+    }
+
+    public void updateGrid() {
+        grid.getChildren().clear();
+        grid.getColumnConstraints().clear();
+        grid.getRowConstraints().clear();
+        grid.setGridLinesVisible(false);
+        drawHeader(grid);
+        drawElements(grid);
+        grid.setGridLinesVisible(true);
     }
 
     @Override
@@ -49,10 +61,8 @@ public class App extends Application {
         List<MoveDirection> directions = OptionsParser.parse(getParameters().getRaw());
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
         SimulationEngine engine = new SimulationEngine(directions, map, positions);
-
-        out.println(map);
-        engine.run();
-        out.println(map);
+        engine.addObserver(this);
+        engineThread = new Thread(engine);
     }
 
     private void drawHeader(GridPane grid) {
@@ -96,11 +106,14 @@ public class App extends Application {
         AbstractMapElement elementToDraw = mapToDraw.elementAt(elementPosition);
         if (elementToDraw == null) return;
 
-//        Label elementLabel = new Label(elementToDraw.toString());
         GuiElementBox guiElementBox = new GuiElementBox(elementToDraw, spriteContainer);
-//        ImageView elementImageView = new ImageView(elementToDraw.getImage(spriteContainer));
 
         grid.add(guiElementBox.getBox(), gridDrawPosition.x, gridDrawPosition.y);
         GridPane.setHalignment(guiElementBox.getBox(), HPos.CENTER);
+    }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        Platform.runLater(this::updateGrid);
     }
 }

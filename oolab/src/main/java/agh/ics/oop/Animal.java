@@ -73,11 +73,11 @@ public class Animal extends AbstractMapElement {
 
     @Override
     public Image getImage(SpriteContainer spriteContainer) {
-        return switch (orientation) {
-            case NORTH -> spriteContainer.getSprite("up");
-            case SOUTH -> spriteContainer.getSprite("down");
-            case WEST -> spriteContainer.getSprite("left");
-            case EAST -> spriteContainer.getSprite("right");
-        };
+        return spriteContainer.getSprite(switch (orientation) {
+            case NORTH -> "up";
+            case SOUTH -> "down";
+            case WEST -> "left";
+            case EAST -> "right";
+        });
     }
 }
