@@ -13,7 +13,7 @@ public class RectangularMap extends AbstractWorldMap {
     }
 
     @Override
-    Vector2d[] getDrawingBounds() {
+    public Vector2d[] getDrawingBounds() {
         return new Vector2d[]{lowerLeft, upperRight};
     }
 }

@@ -49,7 +49,7 @@ public abstract class AbstractWorldMap implements IWorldMap{
         elements.put(newPosition, movedElement);
     }
 
-    abstract Vector2d[] getDrawingBounds();
+    public abstract Vector2d[] getDrawingBounds();
 
     @Override
     public String toString() {

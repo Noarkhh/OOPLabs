@@ -36,7 +36,7 @@ public class GrassField extends AbstractWorldMap {
     }
 
     @Override
-    Vector2d[] getDrawingBounds() {
+    public Vector2d[] getDrawingBounds() {
         if (elements.size() == 0) return new Vector2d[]{new Vector2d(0, 0), new Vector2d(10, 10)};
         return new Vector2d[]{mapBoundary.getLowerLeft(), mapBoundary.getUpperRight()};
     }
