@@ -5,10 +5,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -20,22 +20,32 @@ public class App extends Application implements IPositionChangeObserver {
     private AbstractWorldMap mapToDraw;
     private SpriteContainer spriteContainer;
     private final Vector2d windowSize = new Vector2d(1000, 1000);
-    private final Vector2d verticalHeaderCellSize = new Vector2d(20, 40);
-    private final Vector2d horizontalHeaderCellSize = new Vector2d(40, 20);
+    private final Vector2d verticalHeaderCellSize = new Vector2d(25, 40);
+    private final Vector2d horizontalHeaderCellSize = new Vector2d(40, 25);
 
-    private GridPane grid;
-    private Thread engineThread;
+    private final GridPane grid = new GridPane();
+    private SimulationEngine engine;
 
     @Override
     public void start(Stage primaryStage) {
-        grid = new GridPane();
         updateGrid();
 
-        Scene scene = new Scene(grid, windowSize.x, windowSize.y);
+        Button startButton = new Button("Start the simulation.");
+        TextField directionsInputField = new TextField();
+        startButton.setOnAction(actionEvent -> {
+            try {
+                engine.setDirections(OptionsParser.parse(directionsInputField.getText()));
+                new Thread(engine).start();
+            } catch (IllegalArgumentException ex) {
+                out.println(ex.getMessage());
+                directionsInputField.setText("");
+            }
+        });
+
+        VBox sceneBox = new VBox(20, new HBox(20, directionsInputField, startButton), grid);
+        Scene scene = new Scene(sceneBox, windowSize.x, windowSize.y);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        engineThread.start();
     }
 
     public void updateGrid() {
@@ -43,7 +53,7 @@ public class App extends Application implements IPositionChangeObserver {
         grid.getColumnConstraints().clear();
         grid.getRowConstraints().clear();
         grid.setGridLinesVisible(false);
-        drawHeader(grid);
+        drawHeaders(grid);
         drawElements(grid);
         grid.setGridLinesVisible(true);
     }
@@ -56,16 +66,13 @@ public class App extends Application implements IPositionChangeObserver {
         } catch (NullPointerException ex) {
             out.println(ex.getMessage());
         }
-        AbstractWorldMap map = new GrassField(10);
-        mapToDraw = map;
-        List<MoveDirection> directions = OptionsParser.parse(getParameters().getRaw());
+        mapToDraw = new GrassField(10);
         Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
-        SimulationEngine engine = new SimulationEngine(directions, map, positions);
+        engine = new SimulationEngine(mapToDraw, positions);
         engine.addObserver(this);
-        engineThread = new Thread(engine);
     }
 
-    private void drawHeader(GridPane grid) {
+    private void drawHeaders(GridPane grid) {
         Vector2d[] corners = mapToDraw.getDrawingBounds();
         Vector2d lowerLeft = corners[0], upperRight = corners[1];
 

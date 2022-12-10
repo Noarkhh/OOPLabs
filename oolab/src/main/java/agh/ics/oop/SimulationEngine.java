@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SimulationEngine implements Runnable {
-    private final List<MoveDirection> directions;
+    private List<MoveDirection> directions = new LinkedList<>();
     private final LinkedList<Animal> animals = new LinkedList<>();
     private final int moveDelayMs = 300;
 
@@ -18,8 +18,20 @@ public class SimulationEngine implements Runnable {
         this.directions = directions;
     }
 
+    public SimulationEngine(IWorldMap map, Vector2d[] positions) {
+        for (Vector2d position : positions) {
+            Animal new_animal = new Animal(map, position);
+            map.place(new_animal);
+            animals.add(new_animal);
+        }
+    }
+
     public void addObserver(IPositionChangeObserver observer) {
         for (Animal animal : animals) animal.addObserver(observer);
+    }
+
+    public void setDirections(List<MoveDirection> directionList) {
+        directions = directionList;
     }
 
     @Override
